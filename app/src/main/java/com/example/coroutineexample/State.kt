@@ -2,8 +2,10 @@ package com.example.coroutineexample
 
 import java.lang.Error
 
-class State(
-    val isError: Boolean = false,
-    val isInProgress: Boolean = false,
-    val factorial:String = ""
-)
+open class State()
+
+    class Error:State()
+    class Progress: State()
+    class Result(
+        val factorial:String
+    ):State()

@@ -28,17 +28,20 @@ class MainActivity : AppCompatActivity() {
     }
     private fun observeViewModel(){
         viewModel.state.observe(this){
-            if(it.isInProgress){
-                binding.progressBarLoading.visibility = View.VISIBLE
-                binding.buttonCalculate.isEnabled = false
-            }else{
-                binding.progressBarLoading.visibility = View.GONE
-                binding.buttonCalculate.isEnabled = true
+            binding.progressBarLoading.visibility = View.GONE
+            binding.buttonCalculate.isEnabled = true
+            when(it){
+                is Progress ->{
+                    binding.progressBarLoading.visibility = View.VISIBLE
+                    binding.buttonCalculate.isEnabled = false
+                }
+                is Error ->{
+                    Toast.makeText(this,"You did not entered value",Toast.LENGTH_SHORT).show()
+                }
+                is Result ->{
+                    binding.textViewFactorial.text = it.factorial
+                }
             }
-            if (it.isError){
-                Toast.makeText(this,"You did not entered value",Toast.LENGTH_SHORT).show()
-            }
-            binding.textViewFactorial.text = it.factorial
 
         }
 
