@@ -7,17 +7,20 @@ import android.util.Log
 import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.viewbinding.ViewBinding
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.coroutineexample.databinding.ActivityMainBinding
+import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity(){
     private val viewBinding: ActivityMainBinding by viewBinding()
-
+val city = "Vienna"
+    val temp = "22"
     lateinit var button : Button
     lateinit var tv1 : TextView
     lateinit var tv2 : TextView
@@ -46,31 +49,37 @@ class MainActivity : AppCompatActivity(){
 
   fun  loadData(){
 
-   val jobCity =   lifecycleScope.launch {
+   val deferredCity =   lifecycleScope.async {
 loadcity()
+       city
       }
-   val jobTemperature =   lifecycleScope.launch {
+   val deferredTemperature =   lifecycleScope.async {
           loadTemperature()
+       temp
       }
-      lifecycleScope.launch {
-          jobCity.join()
-          jobTemperature.join()
+      lifecycleScope.launch{
+      val city =   deferredCity.await()
+       val temp =    deferredTemperature.await()
          progressBar.isVisible =false
           button.isEnabled = true
-
+Toast.makeText(this@MainActivity,
+    "city: $city temperature: $temp",
+    Toast.LENGTH_SHORT).show()
       }
 
   }
 
     private suspend fun loadcity():Boolean{
         delay(3000)
-        tv1.text = "Vienna"
+        val city = "city: $city"
+        tv1.text = city
         isloaded = true
         return isloaded
     }
     private suspend fun loadTemperature():Boolean{
         delay(5000)
-        tv2.text = "22"
+        val temperature = "temperature: $temp \u00B0 c"
+        tv2.text = temperature
         isloaded = true
         return isloaded
     }
