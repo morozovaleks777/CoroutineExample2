@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
                 is Error ->{
                     Toast.makeText(this,"You did not entered value",Toast.LENGTH_SHORT).show()
                 }
-                is Result ->{
+                is ResultFactorial ->{
                     binding.textViewFactorial.text = it.factorial
                 }
             }
